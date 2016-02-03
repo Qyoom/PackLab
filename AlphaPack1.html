@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+    <title>AlphaPack1</title>
+</head>
+
+<style>
+    text {
+        font: 20px monospace;
+    }
+
+    .update {
+        fill: #333;
+    }
+
+    .enter {
+        fill: green;
+    }
+</style>
+
+<script src="//d3js.org/d3.v3.min.js"></script>
+
+<script>
+    var data = {
+        "value": "100",
+        "color": "#e6e6e6",
+        "children": []
+    };
+
+    var alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+
+    var diameter = 600;
+
+    var svg = d3.select("body").append("svg")
+        .attr("width", diameter)
+        .attr("height", diameter)
+        .append("g");
+
+    var alphaBubble = d3.layout.pack()
+        .size([diameter, diameter])
+        .padding(5);
+
+    function update(data) {
+        //console.log(data.children);
+        var nodes = alphaBubble.nodes(data);
+
+        // Data join by key, but I'm not sure it will work for nodes. Try it. If it doesn't work, you will need to research how to do data join by key for pack nodes (maybe StackExchange if you can't find anything online.)
+        var vis = svg.selectAll("circle")
+            .data(nodes, function(d) { return d; });
+
+        // UPDATE
+
+        // ENTER
+
+        // EXIT
+            
+    }
+
+    data.children = alphabet;
+    update(data);
+
+    setInterval(function() {
+        data.children = d3.shuffle(alphabet)
+            .slice(0, Math.floor(Math.random() * 26))
+            .sort();
+        update(data);
+    }, 1500);
+</script>
+
+
