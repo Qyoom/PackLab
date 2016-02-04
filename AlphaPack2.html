@@ -20,8 +20,8 @@
 
     .container {
         fill: none;
-        stroke: "black";
-        stroke-width: "1";
+        stroke: black;
+        stroke-width: 1;
     }
 </style>
 
@@ -50,33 +50,38 @@
         .padding(5);
 
     function update(data) {
-        console.log("function update, TOP, data: " + JSON.stringify(data));
+        //console.log("function update, TOP, data: " + JSON.stringify(data));
 
         var nodes = alphaBubble.nodes(data);
 
-        console.log("function update, nodes: " + nodes);
+        //console.log("function update, nodes: " + nodes);
 
         // Data join by key
         var vis = svg.selectAll("circle")
             .data(nodes, function(d) {
-                console.log("Data join by key, d.id: " + d.id);
+                //console.log("Data join by key, d.id: " + d.id);
                 return d.id; 
             });
 
         // UPDATE
-        vis.attr("class", "update");
+        vis.attr("class", function(d, i) {
+            var result = d.id === "charContainer" ? "container" : "update";
+                console.log("UPDATE, i: " + i + ", class: " + result + ", id: " + d.id);
+                return result;
+        });
 
         // ENTER
         vis.enter().append("circle")
             .attr("class", function(d, i) {
-                var result = i > 0 ? "enter" : "container";
+                var result = d.id === "charContainer" ? "container" : "enter";
+                console.log("vis.enter, i: " + i + ", class: " + result + ", id: " + d.id);
                 return result;
             })
             .attr("transform", function(d) {
                 return "translate(" + d.x + ", " + d.y + ")";
             })
             .attr("r", function(d) {
-                console.log("vis.enter, d.r: " + d.r);
+                //console.log("vis.enter, d.r: " + d.r);
                 return d.r; 
             });
 
