@@ -19,6 +19,8 @@
     }
 </style>
 
+<body>
+
 <script src="//d3js.org/d3.v3.min.js"></script>
 
 <script>
@@ -38,34 +40,63 @@
         .append("g");
 
     var alphaBubble = d3.layout.pack()
-        .size([diameter, diameter])
+        .size([diameter, diameter - 50])
         .padding(5);
 
     function update(data) {
-        //console.log(data.children);
+        console.log("==> data: " + JSON.stringify(data));
         var nodes = alphaBubble.nodes(data);
+        //console.log("nodes: " + nodes);
+
+        // TODO .attr("r", function(d) { return d.r; })
 
         // Data join by key, but I'm not sure it will work for nodes. Try it. If it doesn't work, you will need to research how to do data join by key for pack nodes (maybe StackExchange if you can't find anything online.)
         var vis = svg.selectAll("circle")
-            .data(nodes, function(d) { return d; });
+            .data(nodes, function(d) {
+                console.log("d.char: " + d.char);
+                return d.char; 
+            });
+        console.log("<--1-->vis: " + vis);
+        console.log("<2>vis: " + JSON.stringify(vis));
 
         // UPDATE
+        vis.attr("class", "update");
 
         // ENTER
+        vis.enter().append("circle")
+            .attr("class", "enter")
+            .append("circle")
+            .attr("transform", function(d) {
+                return "translate(" + d.x + ", " + d.y + ")";
+            })
+            .attr("r", function(d) {
+                console.log("<2>d.r: " + d.r);
+                return d.r; 
+            });
 
         // EXIT
-            
+        vis.exit().remove();    
     }
 
-    data.children = alphabet;
+    function objectify(alphArr) {
+        var objArr = [];
+        for(var i = 0; i < alphArr.length; i++) {
+            objArr.push({"char": alphArr[i], "value": 25});
+        }
+        return objArr;
+    }
+
+    data.children = objectify(alphabet);
+    //console.log("data: " + data);
+    //console.log("data stringify: " + JSON.stringify(data));
     update(data);
 
-    setInterval(function() {
-        data.children = d3.shuffle(alphabet)
-            .slice(0, Math.floor(Math.random() * 26))
-            .sort();
-        update(data);
-    }, 1500);
+    // setInterval(function() {
+    //     data.children = d3.shuffle(alphabet)
+    //         .slice(0, Math.floor(Math.random() * 26))
+    //         .sort();
+    //     update(data);
+    // }, 1500);
 </script>
 
 
