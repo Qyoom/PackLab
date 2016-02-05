@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+    <title>AlphaPack7</title>
+</head>
+
+<style>
+    text {
+        font: bold 40px monospace;
+        fill: white;
+    }
+
+    .update {
+        fill: #333;
+    }
+
+    .enter {
+        fill: green;
+    }
+
+    .exit {
+        fill: brown;
+    }
+
+    .container {
+        fill: none;
+        stroke: black;
+        stroke-width: 1;
+    }
+</style>
+
+<body>
+
+<script src="//d3js.org/d3.v3.js"></script>
+
+<script>
+    var data = {
+        "id": "charContainer",
+        "value": "100",
+        "children": []
+    };
+
+    var alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+
+    var diameter = 600;
+
+    var svg = d3.select("body").append("svg")
+        .attr("width", diameter)
+        .attr("height", diameter)
+        .append("g");
+
+    var alphaBubble = d3.layout.pack()
+        .size([diameter - 50, diameter - 50])
+        .padding(5);
+
+    function update(data) {
+
+        var nodes = alphaBubble.nodes(data);
+
+        // Data join by key
+        var node = svg.selectAll(".node")
+            .data(nodes, function(d) {
+                return d.id; 
+            });
+
+        // UPDATE
+        node.selectAll("circle")
+            .attr("class", function(d, i) {
+            console.log("UPDATE, d.id: " + d.id)
+            var result = d.id === "charContainer" ? "container" : "update";
+                return result;
+        });
+
+        // ENTER
+        var enterNode = node.enter().append("g")
+            .attr("class", "node")
+            
+        enterNode.append("circle")
+            .attr("class", function(d, i) {
+                var result = d.id === "charContainer" ? "container" : "enter";
+                //console.log("node.enter, i: " + i + ", class: " + result + ", id: " + d.id);
+                return result;
+            })
+            .style("fill-opacity", 1e-6);
+         
+        enterNode.append("text")
+            .text(function(d) { return d.id; });   
+
+        node.transition().duration(750)
+            .attr("transform", function(d) {
+                return "translate(" + d.x + ", " + d.y + ")";
+            })
+            
+        node.selectAll("circle")
+          .transition()
+            .duration(750)
+            .attr("r", function(d) {
+                //console.log("node.enter, d.r: " + d.r);
+                return d.r; 
+            })
+            .style("fill-opacity", 1);
+
+        // EXIT
+        node.exit().selectAll("circle")
+            .attr("class", "exit");
+          
+        node.exit()
+          .transition()
+            .duration(750)
+            .attr("transform", function(d) {
+                return "translate(" + (+500) + ", " + (+500) + ")";
+            })
+            .remove();;
+
+        node.exit().selectAll("circle")
+          .transition()
+            .duration(750)
+            .style("fill-opacity", 1e-6);    
+    }
+
+    function objectify(alphArr) {
+        var objArr = [];
+        for(var i = 0; i < alphArr.length; i++) {
+            objArr.push({"id": alphArr[i], "value": 25});
+        }
+        return objArr;
+    }
+
+    data.children = objectify(alphabet);
+
+    update(data);
+
+    setInterval(function() {
+        var newChildren = d3.shuffle(alphabet)
+            .slice(0, Math.floor(Math.random() * 26))
+            .sort();
+        data.children = objectify(newChildren);
+        update(data);
+    }, 1500);
+</script>
+
+
