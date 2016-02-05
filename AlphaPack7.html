@@ -56,6 +56,8 @@
 
     function update(data) {
 
+        var rHack; // TODO: TEMPORARY WORKAROUND
+
         var nodes = alphaBubble.nodes(data);
 
         // Data join by key
@@ -67,11 +69,11 @@
         // UPDATE
         node.selectAll("circle")
             .attr("class", function(d, i) {
-            console.log("UPDATE, d.id: " + d.id)
+            //console.log("UPDATE, d.id: " + d.id)
             var result = d.id === "charContainer" ? "container" : "update";
                 return result;
         });
-
+ 
         // ENTER
         var enterNode = node.enter().append("g")
             .attr("class", "node")
@@ -79,7 +81,8 @@
         enterNode.append("circle")
             .attr("class", function(d, i) {
                 var result = d.id === "charContainer" ? "container" : "enter";
-                //console.log("node.enter, i: " + i + ", class: " + result + ", id: " + d.id);
+                console.log("<1>node.enter, i: " + i + ", class: " + result + ", id: " + d.id + ", d.r: " + d.r);
+                rHack = d.r;
                 return result;
             })
             .style("fill-opacity", 1e-6);
@@ -96,8 +99,9 @@
           .transition()
             .duration(750)
             .attr("r", function(d) {
-                //console.log("node.enter, d.r: " + d.r);
-                return d.r; 
+                console.log("<2>node.selectAll(circle), d.r: " + d.r + ", rHack: " + rHack);
+                //return d.r;
+                return typeof rHack === 'undefined' ? d.r : rHack;
             })
             .style("fill-opacity", 1);
 
