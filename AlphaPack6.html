@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
+<!-- AlphaPackt6. I'M SAVING THIS BECAUSE IT'S ALMOST PERFECT. THE ONLY PROBLEM IS THAT UPDATE IS NOT TRANSITIONING IT'S RADIUS SIZE. -->
+
 <head>
-    <title>AlphaPack5</title>
+    <title>AlphaPack6</title>
 </head>
 
 <style>
@@ -34,6 +36,7 @@
 
 <script src="//d3js.org/d3.v3.js"></script>
 
+<!-- AlphaPackt6. I'M SAVING THIS BECAUSE IT'S ALMOST PERFECT. THE ONLY PROBLEM IS THAT UPDATE IS NOT TRANSITIONING ITS RADIUS SIZE. -->
 <script>
     var data = {
         "id": "charContainer",
@@ -67,15 +70,16 @@
         // UPDATE
         node.selectAll("circle")
             .attr("class", function(d, i) {
+            console.log("UPDATE, d.id: " + d.id)
             var result = d.id === "charContainer" ? "container" : "update";
                 return result;
         });
 
         // ENTER
-        node.enter().append("g")
+        var enterNode = node.enter().append("g")
             .attr("class", "node")
             
-        node.append("circle")
+        enterNode.append("circle")
             .attr("class", function(d, i) {
                 var result = d.id === "charContainer" ? "container" : "enter";
                 //console.log("node.enter, i: " + i + ", class: " + result + ", id: " + d.id);
@@ -83,7 +87,7 @@
             })
             .style("fill-opacity", 1e-6);
          
-        node.append("text")
+        enterNode.append("text")
             .text(function(d) { return d.id; });   
 
         node.transition().duration(750)
