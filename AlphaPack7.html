@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
+<!-- AlphaPackt6. I'M SAVING THIS BECAUSE IT'S ALMOST PERFECT. THE ONLY PROBLEM IS THAT UPDATE IS NOT TRANSITIONING IT'S RADIUS SIZE. -->
+
 <head>
-    <title>AlphaPack7</title>
+    <title>AlphaPack6</title>
 </head>
 
 <style>
@@ -34,6 +36,7 @@
 
 <script src="//d3js.org/d3.v3.js"></script>
 
+<!-- AlphaPackt6. I'M SAVING THIS BECAUSE IT'S ALMOST PERFECT. THE ONLY PROBLEM IS THAT UPDATE IS NOT TRANSITIONING ITS RADIUS SIZE. -->
 <script>
     var data = {
         "id": "charContainer",
@@ -56,12 +59,16 @@
 
     function update(data) {
 
-        var rHack; // TODO: TEMPORARY WORKAROUND
-
         var nodes = alphaBubble.nodes(data);
 
-        // Data join by key
+        // Data join by key to <g> nodes
         var node = svg.selectAll(".node")
+            .data(nodes, function(d) {
+                return d.id; 
+            });
+
+        // Data join by key to circles
+        var circles = svg.selectAll("circle")
             .data(nodes, function(d) {
                 return d.id; 
             });
@@ -69,11 +76,11 @@
         // UPDATE
         node.selectAll("circle")
             .attr("class", function(d, i) {
-            //console.log("UPDATE, d.id: " + d.id)
+            console.log("UPDATE, d.id: " + d.id)
             var result = d.id === "charContainer" ? "container" : "update";
                 return result;
         });
- 
+
         // ENTER
         var enterNode = node.enter().append("g")
             .attr("class", "node")
@@ -81,8 +88,7 @@
         enterNode.append("circle")
             .attr("class", function(d, i) {
                 var result = d.id === "charContainer" ? "container" : "enter";
-                console.log("<1>node.enter, i: " + i + ", class: " + result + ", id: " + d.id + ", d.r: " + d.r);
-                rHack = d.r;
+                //console.log("node.enter, i: " + i + ", class: " + result + ", id: " + d.id);
                 return result;
             })
             .style("fill-opacity", 1e-6);
@@ -99,9 +105,8 @@
           .transition()
             .duration(750)
             .attr("r", function(d) {
-                console.log("<2>node.selectAll(circle), d.r: " + d.r + ", rHack: " + rHack);
-                //return d.r;
-                return typeof rHack === 'undefined' ? d.r : rHack;
+                //console.log("node.enter, d.r: " + d.r);
+                return d.r; 
             })
             .style("fill-opacity", 1);
 
